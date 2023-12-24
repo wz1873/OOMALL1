@@ -38,6 +38,7 @@ public class CouponActService {
         this.onsaleDao = onsaleDao;
     }
 
+
     /**
      * 新建己方优惠活动
      *
@@ -61,6 +62,16 @@ public class CouponActService {
     public List<CouponAct> retrieveByShopIdAndProductId(Long shopId, Long productId, Integer status, Integer page, Integer pageSize) {
         //通过productId查询活动对象
         return this.activityDao.retrieveByShopIdAndProductId(shopId, productId,CouponAct.ACTCLASS, status, page, pageSize);
+    }
+    /**
+     * 根据id返回优惠活动
+     * @param id     活动Id
+     * @return
+     */
+    @Transactional
+    public CouponAct findCouponActById(Long id) throws BusinessException {
+        CouponAct act = this.activityDao.findById(id, PLATFORM, CouponAct.ACTCLASS);
+        return act;
     }
 
     /**

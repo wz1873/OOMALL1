@@ -2,9 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
-    <parent>
+    <!-- xmlns 命名空间 类似包名 -->
+    <!-- xmlns:xsi  xml遵循的标签规范 -->
+    <parent><!-- 父POM ，共享配置 -->
+        <!-- groupId：属于哪个组  这里指定为Spring Boot-->
         <groupId>org.springframework.boot</groupId>
+        <!-- 当前项目在组中的唯一id ，定义项目的基本配置-->
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.0.2</version>
         <relativePath/>
@@ -19,7 +22,8 @@
     <description>the tutorial project for course "SE", "OOAD" and "JavaEE" in Informatics School Xiamen University
     </description>
     <packaging>pom</packaging>
-
+    <!--  -->
+    <!-- 定义的属性变量，在其他地方进行使用 -->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -48,10 +52,14 @@
         <module>jtexpress</module>
     </modules>
 
+    <!-- dependencyManagament ：依赖管理 -->
     <dependencyManagement>
+        <!-- 定义的依赖清单，所有依赖包都要写在这个标签里面 -->
         <dependencies>
             <dependency>
+                <!-- 依赖项的组织名 -->
                 <groupId>cn.edu.xmu.javaee</groupId>
+                <!-- 依赖项的子项目名 -->
                 <artifactId>core</artifactId>
                 <version>0.0.3-SNAPSHOT</version>
             </dependency>
@@ -219,12 +227,17 @@
         </dependencies>
     </dependencyManagement>
 
+    <!-- 构建项目需要的信息 主要用于编译设置 -->
     <build>
+        <!-- 使用的插件列表 -->
         <plugins>
+            <!-- plugin元素包含描述插件所需要的信息 -->
             <plugin>
+                <!-- 插件在仓库里的group ID -->
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.7</version>
+                <!-- 排除依赖，主动断开依赖的资源，排除项目中的依赖冲突时使用，不依赖该项目 -->
                 <executions>
                     <execution>
                         <id>prepare-agent</id>

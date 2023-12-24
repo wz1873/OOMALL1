@@ -1,8 +1,11 @@
 //School of Informatics Xiamen University, GPL-3.0 license
 package cn.edu.xmu.oomall.product.controller;
 
+import cn.edu.xmu.javaee.core.aop.LoginUser;
+import cn.edu.xmu.javaee.core.model.ReturnNo;
 import cn.edu.xmu.javaee.core.model.ReturnObject;
 import cn.edu.xmu.javaee.core.model.dto.PageDto;
+import cn.edu.xmu.javaee.core.model.dto.UserDto;
 import cn.edu.xmu.javaee.core.util.CloneFactory;
 import cn.edu.xmu.oomall.product.controller.dto.*;
 import cn.edu.xmu.oomall.product.controller.vo.OrderInfoVo;
@@ -20,6 +23,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -110,5 +114,38 @@ public class CouponActController {
         List<Product> products = this.couponActService.retrieveProduct(id);
         List<SimpleProductDto> dtos = products.stream().map(product -> new SimpleProductDto(product)).collect(Collectors.toList());
         return new ReturnObject(new PageDto<>(dtos.subList((page-1) * pageSize, Math.min(dtos.size(), page * pageSize)), page, pageSize));
+    }
+
+    /**
+     * 买家领取活动优惠券，上线状态才能领取
+     * @param id
+     * @param user
+     * 695 优惠卷领取成功
+     * 696 未到优惠卷领取时间
+     * 697 优惠卷领罄
+     * 698 优惠卷活动终止
+     * 699 不可重复领优惠卷
+     */
+    @GetMapping("/couponactivities/{id}/coupons")
+    @Transactional(propagation = Propagation.REQUIRED)
+    public ReturnObject findCouponsById(@PathVariable Long id,@LoginUser UserDto user) {
+//        CouponAct act = this.couponActService.findById(PLATFORM, id);
+        CouponAct act  = this.couponActService.findCouponActById(id);
+        if(act.getValidTerm()<1){
+            return new ReturnObject(ReturnNo.COUPON_END);//698
+        }else if(act.getQuantity()<1){
+            return new ReturnObject(ReturnNo.COUPON_FINISH);//697
+        }else if(act.getCouponTime().isAfter(LocalDateTime.now())){
+            return new ReturnObject(ReturnNo.COUPON_NOTBEGIN);//696
+        }
+
+
+        CouponAct reAct=couponActService.addCouponactivity(act,user);
+        if(reAct!=null){
+            return new ReturnObject(ReturnNo.COUPON_OK); //695
+        }else{
+            return new ReturnObject(ReturnNo.COUPON_EXIST); //699
+        }
+
     }
 }

@@ -1,5 +1,6 @@
 package cn.edu.xmu.oomall.product.service;
 
+import cn.edu.xmu.javaee.core.exception.BusinessException;
 import cn.edu.xmu.javaee.core.mapper.RedisUtil;
 import cn.edu.xmu.javaee.core.model.dto.UserDto;
 import cn.edu.xmu.oomall.product.ProductTestApplication;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static cn.edu.xmu.javaee.core.model.Constants.PLATFORM;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Rui Li
@@ -52,5 +54,13 @@ public class OnSaleServiceTest {
         assert couponActProduct.size() == 1;
         assert Objects.equals(product.getName(), "肖家白胡椒粉30");
 
+    }
+
+    /**
+     * 库存不足
+     */
+    @Test
+    void testIncrQuantityGivenExceedQuantity() {
+        assertThrows(BusinessException.class,()->onsaleService.incrQuantity(147L,100));
     }
 }

@@ -6,6 +6,7 @@ import cn.edu.xmu.javaee.core.aop.LoginUser;
 import cn.edu.xmu.javaee.core.model.ReturnNo;
 import cn.edu.xmu.javaee.core.model.ReturnObject;
 import cn.edu.xmu.javaee.core.model.dto.UserDto;
+import cn.edu.xmu.oomall.order.controller.vo.OrderItemVo;
 import cn.edu.xmu.oomall.order.controller.vo.OrderVo;
 import cn.edu.xmu.oomall.order.service.OrderService;
 import cn.edu.xmu.oomall.order.service.dto.ConsigneeDto;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController /*Restful的Controller对象*/
@@ -27,6 +29,12 @@ public class CustomerController {
         this.orderService = orderService;
     }
 
+    /**
+     * 买家申请建立订单(普通，团购，预售)
+     * @param orderVo
+     * @param user
+     * @return
+     */
     @PostMapping("/orders")
     public ReturnObject createOrder(@RequestBody @Validated OrderVo orderVo, @LoginUser UserDto user) {
         orderService.createOrder(orderVo.getItems().stream().map(item -> OrderItemDto.builder().onsaleId(item.getOnsaleId()).quantity(item.getQuantity()).actId(item.getActId()).couponId(item.getCouponId()).build()).collect(Collectors.toList()),

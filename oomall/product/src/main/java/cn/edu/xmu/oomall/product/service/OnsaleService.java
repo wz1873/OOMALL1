@@ -2,7 +2,9 @@
 
 package cn.edu.xmu.oomall.product.service;
 
+import cn.edu.xmu.javaee.core.exception.BusinessException;
 import cn.edu.xmu.javaee.core.mapper.RedisUtil;
+import cn.edu.xmu.javaee.core.model.ReturnNo;
 import cn.edu.xmu.javaee.core.model.dto.UserDto;
 import cn.edu.xmu.oomall.product.dao.ProductDao;
 import cn.edu.xmu.oomall.product.dao.bo.OnSale;
@@ -135,6 +137,7 @@ public class OnsaleService {
         Integer newQuantity = onsale.getQuantity() + quantity;
         if (newQuantity < 0){
             logger.error("incrQuantity: onsale id = {} is oversold", onsaleId);
+            throw new BusinessException(ReturnNo.GOODS_STOCK_SHORTAGE, String.format(ReturnNo.GOODS_STOCK_SHORTAGE.getMessage(),onsale.getId()));
         }
         // 如果productId和起止时间都为空，save时hasConflictOnsale方法会报错
         OnSale newOnsale = OnSale.builder().id(onsaleId).quantity(newQuantity).productId(onsale.getProductId()).build();

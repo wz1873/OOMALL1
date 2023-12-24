@@ -59,8 +59,11 @@ public class OrderService {
             OrderItem orderItem = OrderItem.builder().onsaleId(onsaleDto.getId()).price(onsaleDto.getPrice()).name(onsaleDto.getProduct().getName()).creatorId(customer.getId()).creatorName(customer.getName()).build();
             if (null != onsaleDto.getActList() && null != item.getActId()){
                 if (onsaleDto.getActList().stream().filter(activity -> activity.getId() == item.getActId()).count()  > 0){
-                    orderItem.setActId(item.getActId());
+//                    orderItem.setActId(item.getActId());
                     //TODO: 需要查看优惠卷id所属的活动是否在onsale的活动列表中，并且优惠卷是有效的，才能设置到orderItem中
+                    if(LocalDateTime.now().isBefore(onsaleDto.getEndTime())){
+                        orderItem.setActId(item.getActId());
+                    }
                 }
             }
             if (item.getQuantity() <= onsaleDto.getMaxQuantity()){

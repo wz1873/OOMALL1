@@ -128,11 +128,8 @@ public class GrouponActService {
         GrouponAct oldAct = this.activityDao.findById(act.getId(), act.getShopId(), GrouponAct.ACTCLASS);
         if (onsale.hasValue()) {
             List<OnSale> onsales = oldAct.getOnsaleList();
-<<<<<<< HEAD
-=======
             if (Objects.isNull(onsale.getEndTime())) onsale.setEndTime(onsales.get(0).getEndTime());
             if (Objects.isNull(onsale.getBeginTime())) onsale.setBeginTime(onsales.get(0).getBeginTime());
->>>>>>> 3a200f3f810107b4c3bb38ad75f6101ae897f920
             for (OnSale obj : onsales) {
                 //修改所有对象的beginTime和EndTime
                 onsale.setId(obj.getId());
